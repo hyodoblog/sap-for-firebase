@@ -20,12 +20,13 @@ cloudFunctions () {
 # cloud run
 
 cloudRun () {
+  export PORT=8080
   gcloud config set project sap-app-df10e
-  docker build --platform linux/amd64 -t sap-app-df10e-prod ./packages/app
-  docker tag sap-app-df10e-prod gcr.io/sap-app-df10e/prod
-  docker push gcr.io/sap-app-df10e/prod
+  gcloud auth configure-docker --quiet
+  docker build --platform linux/amd64 -t gcr.io/sap-app-df10e/prod:latest ./packages/app
+  docker push gcr.io/sap-app-df10e/prod:latest
   gcloud beta run deploy prod \
-    --image gcr.io/sap-app-df10e/prod \
+    --image gcr.io/sap-app-df10e/prod:latest \
     --max-instances 2 \
     --region asia-northeast1 \
     --platform managed \
@@ -34,6 +35,6 @@ cloudRun () {
     --allow-unauthenticated
 }
 
-cloudFunctions & cloudRun
+# cloudFunctions & cloudRun
 # cloudFunctions
-# cloudRun
+cloudRun
