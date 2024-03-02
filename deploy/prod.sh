@@ -20,7 +20,6 @@ cloudFunctions () {
 # cloud run
 
 cloudRun () {
-  export PORT=8080
   gcloud config set project sap-app-df10e
   gcloud auth configure-docker --quiet
   docker build --platform linux/amd64 -t gcr.io/sap-app-df10e/prod:latest ./packages/app
