@@ -24,6 +24,7 @@ const getRoomItem = async (roomUid: string): Promise<Room> => {
 // ********
 // main関数
 // ********
+
 async function main(data: any, context: https.CallableContext) {
   console.info('matching関数実行開始')
 
@@ -56,6 +57,4 @@ const runtimeOpts: RuntimeOptions = {
   memory: '256MB',
 }
 
-module.exports = module.exports = region('asia-northeast1')
-  .runWith(runtimeOpts)
-  .https.onCall((data, context) => main(data, context))
+module.exports = module.exports = region('asia-northeast1').runWith(runtimeOpts).https.onCall(main)
