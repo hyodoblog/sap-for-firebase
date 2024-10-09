@@ -1,6 +1,5 @@
 // config
-import { envSendGrid } from '../../../../config/env'
-import { DynamicTemplateParams, sendGrid } from '../../../../config/sendgrid'
+import { DynamicTemplateParams, sendMail } from '../../../../config/sendgrid'
 
 // modules handlers
 import { firebaseVerifyIdToken } from '../../../../modules/handlers/firebase'
@@ -44,14 +43,6 @@ const getSendUserItem = async (roomUid: string, groupUid: string): Promise<Dynam
   return sendUserItem
 }
 
-const sendMail = (templateId: string, params: DynamicTemplateParams): Promise<any> =>
-  sendGrid.send({
-    to: params.email,
-    from: envSendGrid.email.noreply.replace(/\r?\n/g, ''),
-    templateId,
-    dynamicTemplateData: params,
-  })
-
 export default async (req: any, res: any) => {
   try {
     const data = req.body
@@ -60,10 +51,9 @@ export default async (req: any, res: any) => {
     if (!decodedIdToken.uid) throw new Error('Not Permission Error.')
 
     const { roomUid, groupUid } = data
-    const templateId = envSendGrid.templateId.invitation
 
     const sendUserItem = await getSendUserItem(roomUid, groupUid)
-    await sendMail(templateId, sendUserItem)
+    await sendMail(sendUserItem)
 
     res.status(200).end()
   } catch (err) {
