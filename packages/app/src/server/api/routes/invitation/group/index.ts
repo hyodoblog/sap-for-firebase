@@ -1,6 +1,6 @@
 // config
 import { envSendGrid } from '../../../../config/env'
-import sgMail from '../../../../config/sendgrid'
+import { DynamicTemplateParams, sendGrid } from '../../../../config/sendgrid'
 
 // modules handlers
 import { firebaseVerifyIdToken } from '../../../../modules/handlers/firebase'
@@ -18,25 +18,14 @@ import { ApiGroupInvitationReqParams } from '../../../../../modules/types/api'
 const isRequestBody = (data: any): data is ApiGroupInvitationReqParams =>
   data !== null && typeof data.roomUid === 'string' && typeof data.groupUid === 'string'
 
-/* eslint-disable */
-interface dynamicTemplateParams {
-  email: string
-  user_name: string
-  room_owner_name: string
-  room_name: string
-  login_url: string
-  start_datetime: string
-  voting_end_datetime: string
-  browsing_end_datetime: string
-}
-const getSendUserItem = async (roomUid: string, groupUid: string): Promise<dynamicTemplateParams> => {
+const getSendUserItem = async (roomUid: string, groupUid: string): Promise<DynamicTemplateParams> => {
   // データの取得
   const roomItem = await firestoreGetRoom(roomUid)
   const ownerUserItem = await firestoreGetUser(roomItem.userUid)
   const groupItem = await firestoreGetGroupItem(roomUid, groupUid)
 
   // データの整形
-  const sendUserItem: dynamicTemplateParams = {
+  const sendUserItem: DynamicTemplateParams = {
     email: groupItem.email as string,
     user_name: groupItem.displayName,
     room_owner_name: ownerUserItem?.nickname as string,
@@ -55,8 +44,8 @@ const getSendUserItem = async (roomUid: string, groupUid: string): Promise<dynam
   return sendUserItem
 }
 
-const sendMail = (templateId: string, params: dynamicTemplateParams): Promise<any> =>
-  sgMail.send({
+const sendMail = (templateId: string, params: DynamicTemplateParams): Promise<any> =>
+  sendGrid.send({
     to: params.email,
     from: envSendGrid.email.noreply.replace(/\r?\n/g, ''),
     templateId,

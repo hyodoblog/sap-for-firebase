@@ -1,6 +1,6 @@
 // config
 import { envSendGrid } from '../../../../config/env'
-import sgMail from '../../../../config/sendgrid'
+import { sendGrid } from '../../../../config/sendgrid'
 
 // modules handlers
 import { firebaseVerifyIdToken } from '../../../../modules/handlers/firebase'
@@ -56,7 +56,7 @@ const getSendUserItem = async (roomUid: string, participateUserUid: string): Pro
 }
 
 const sendMail = (templateId: string, params: dynamicTemplateParams): Promise<any> =>
-  sgMail.send({
+  sendGrid.send({
     to: params.email,
     from: envSendGrid.email.noreply.replace(/\r?\n/g, ''),
     templateId,

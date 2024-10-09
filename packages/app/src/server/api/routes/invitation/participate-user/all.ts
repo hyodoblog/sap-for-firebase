@@ -1,6 +1,6 @@
 // config
 import { envSendGrid } from '../../../../config/env'
-import sgMail from '../../../../config/sendgrid'
+import { sendGrid } from '../../../../config/sendgrid'
 
 // modules handlers
 import { firebaseVerifyIdToken } from '../../../../modules/handlers/firebase'
@@ -62,7 +62,7 @@ const getSendUserItems = async (roomUid: string): Promise<dynamicTemplateParams[
 const sendMail = (templateId: string, sendUserItems: dynamicTemplateParams[]): Promise<any> =>
   Promise.all(
     sendUserItems.map((item) =>
-      sgMail.send({
+      sendGrid.send({
         to: item.email.replace(/\r?\n/g, ''),
         from: envSendGrid.email.noreply.replace(/\r?\n/g, ''),
         templateId,
